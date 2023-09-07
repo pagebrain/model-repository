@@ -18,5 +18,6 @@ os.makedirs(MODEL_CACHE, exist_ok=True)
 pipe = StableDiffusionPipeline.from_pretrained(
     MODEL_ID,
     cache_dir=MODEL_CACHE,
-    use_safetensors=True
+    use_safetensors=True,
+    safety_checker=None
 )
