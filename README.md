@@ -1,7 +1,7 @@
 # Model Repository
 
 ```bash
-export MODEL_NAME="dreamshaper-v7"
+export MODEL_NAME="absolutereality-v1-8-1"
 export MODEL_URL="https://civitai.com/api/download/models/109123?type=Model&format=SafeTensor&size=pruned&fp=fp16"
 ```
 
@@ -44,8 +44,10 @@ envsubst < script/download-weights > $MODEL_NAME/script/download-weights
 sudo chmod +x $MODEL_NAME/script/download-weights
 envsubst < cog.yaml > $MODEL_NAME/cog.yaml
 
-cog login
+# cog login
 cd $MODEL_NAME
+git clone https://huggingface.co/pagebrain/$MODEL_NAME model
+rm -rf model/.git
 cog run script/download-weights
 cog predict -i prompt="monkey scuba diving"
 cog push
