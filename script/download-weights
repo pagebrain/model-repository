@@ -8,6 +8,11 @@ from diffusers.pipelines.stable_diffusion.safety_checker import (
 )
 import torch
 
+EMBEDDINGS = [(x.split(".")[0], "/embeddings/"+x) for x in os.listdir("/embeddings/")]
+EMBEDDING_TOKENS = [x[0] for x in EMBEDDINGS]
+EMBEDDING_PATHS = [x[1] for x in EMBEDDINGS]
+print(EMBEDDING_TOKENS, EMBEDDING_PATHS)
+
 MODEL_ID = "pagebrain/$MODEL_NAME"
 MODEL_CACHE = "diffusers-cache"
 
@@ -16,15 +21,17 @@ MODEL_CACHE = "diffusers-cache"
 # os.makedirs(MODEL_CACHE, exist_ok=True)
 
 saftey_checker = StableDiffusionSafetyChecker.from_pretrained(
-    "./model/safety_checker",
+    "/model/safety_checker",
     # cache_dir=MODEL_CACHE,
     # use_safetensors=True
     torch_dtype=torch.float16,
 )
 
 pipe = StableDiffusionPipeline.from_pretrained(
-    "./model",
+    "/model",
     # cache_dir=MODEL_CACHE,
     use_safetensors=True,
     safety_checker=None
 )
+
+pipe.load_textual_inversion(EMBEDDING_PATHS, token=EMBEDDING_TOKENS, local_files_only=True)

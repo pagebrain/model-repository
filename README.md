@@ -44,6 +44,10 @@ envsubst < script/download-weights > $MODEL_NAME/script/download-weights
 sudo chmod +x $MODEL_NAME/script/download-weights
 envsubst < cog.yaml > $MODEL_NAME/cog.yaml
 
+# download negative embeddings
+mkdir embeddings/ && cd embeddings/ && wget -O FastNegativeV2.pt "https://civitai.com/api/download/models/94057?type=Model&format=PickleTensor" && wget -O BadDream.pt "https://civitai.com/api/download/models/77169?type=Model&format=PickleTensor" && wget -O UnrealisticDream.pt "https://civitai.com/api/download/models/77173?type=Model&format=PickleTensor" && wget -O EasyNegative.pt "https://civitai.com/api/download/models/9536?type=Model&format=PickleTensor&size=full&fp=fp16" && wget -O ng_deepnegative_v1_75t.pt "https://civitai.com/api/download/models/5637?type=Model&format=PickleTensor&size=full&fp=fp16" && wget -O negative_hand-neg.pt "https://civitai.com/api/download/models/60938?type=Negative&format=Other" && wget -O realisticvision-negative-embedding.pt "https://civitai.com/api/download/models/42247?type=Model&format=Other"
+
+
 # cog login
 cd $MODEL_NAME
 git clone https://huggingface.co/pagebrain/$MODEL_NAME model

@@ -42,9 +42,11 @@ SCHEDULERS = {
     "KLMS": LMSDiscreteScheduler,
 }
 
+EMBEDDINGS = [(x.split(".")[0], "/embeddings/"+x) for x in os.listdir("/embeddings/")]
+EMBEDDING_TOKENS = [x[0] for x in EMBEDDINGS]
+EMBEDDING_PATHS = [x[1] for x in EMBEDDINGS]
 
-
-MODEL_ID = "pagebrain/$MODEL_NAME"
+MODEL_ID = "pagebrain/realistic-vision-v5-1"
 MODEL_CACHE = "diffusers-cache"
 SAFETY_MODEL_ID = "CompVis/stable-diffusion-safety-checker"
 
@@ -67,23 +69,24 @@ class Predictor(BasePredictor):
     def setup(self):
         """Load the model into memory to make running multiple predictions efficient"""
         self.safety_checker = StableDiffusionSafetyChecker.from_pretrained(
-            "./model/safety_checker",
+            "/model/safety_checker",
             # cache_dir=MODEL_CACHE,
             local_files_only=True,
             torch_dtype=torch.float16,
         ).to("cuda")
 
-        self.feature_extractor = CLIPImageProcessor.from_pretrained("./model/feature_extractor")
+        self.feature_extractor = CLIPImageProcessor.from_pretrained("/model/feature_extractor")
 
         print("Loading txt2img pipeline...")
         self.txt2img_pipe = StableDiffusionPipeline.from_pretrained(
-            "./model/",
+            "/model/",
             # cache_dir=MODEL_CACHE,
             local_files_only=True,
             use_safetensors=True,
             safety_checker=None,
             requires_safety_checker=False
         )
+        self.txt2img_pipe.load_textual_inversion(EMBEDDING_PATHS, token=EMBEDDING_TOKENS, local_files_only=True)
         self.txt2img_pipe.to("cuda")
 
         print("Loading img2img pipeline...")
@@ -124,7 +127,7 @@ class Predictor(BasePredictor):
             default=None,
         ),
         negative_prompt: str = Input(
-            description="Specify things to not see in the output",
+            description="Specify things to not see in the output. Supported embeddings: " + ", ".join(EMBEDDING_TOKENS),
             default=None,
         ),
         image: Path = Input(
