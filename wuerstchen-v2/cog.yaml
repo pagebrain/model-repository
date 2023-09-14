@@ -1,0 +1,18 @@
+build:
+  gpu: true
+  cuda: "11.8"
+  python_version: "3.11.1"
+  python_packages:
+    - "diffusers==0.21.0"
+    - "torch==2.0.1 --index-url https://download.pytorch.org/whl/cu118"
+    - "ftfy==6.1.1"
+    - "scipy==1.11.2"
+    - "transformers==4.33.1"
+    - "accelerate==0.22.0"
+    - "safetensors==0.3.3"
+    - "xformers==0.0.21"
+  run:
+    - python -c "import torch; from diffusers import AutoPipelineForText2Image; AutoPipelineForText2Image.from_pretrained('warp-ai/wuerstchen', torch_dtype=torch.float16, use_safetensors=True, cache_dir='diffusers-cache')"
+
+predict: "predict.py:Predictor"
+image: "r8.im/pagebrain/wuerstchen-v2"

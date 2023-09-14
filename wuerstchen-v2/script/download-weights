@@ -1,0 +1,7 @@
+#!/usr/bin/env python
+
+import os
+import shutil
+import torch
+from diffusers import AutoPipelineForText2Image
+AutoPipelineForText2Image.from_pretrained('warp-ai/wuerstchen', torch_dtype=torch.float16, use_safetensors=True, cache_dir='diffusers-cache')
