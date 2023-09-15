@@ -1,0 +1,13 @@
+build:
+  gpu: true
+  python_version: "3.11"
+  python_packages:
+    - "git+https://github.com/coqui-ai/TTS.git"
+  run:
+    #- python -c "import os; os.environ['COQUI_TOS_AGREED'] = '1'; from TTS.api import TTS; tts = TTS('tts_models/multilingual/multi-dataset/xtts_v1', gpu=True)"
+    - apt-get update && apt-get install -y git-lfs && git lfs install && rm -rf /var/lib/apt/lists/*
+    - git clone https://huggingface.co/coqui/XTTS-v1 model && rm -rf model/.git && rm -f model/README.md
+    #- wget --content-disposition "https://huggingface.co/spaces/coqui/xtts/resolve/main/examples/male.wav" && wget --content-disposition "https://huggingface.co/spaces/coqui/xtts/resolve/main/examples/female.wav" 
+    
+predict: "predict.py:Predictor"
+image: "r8.im/pagebrain/xtts-v1"
